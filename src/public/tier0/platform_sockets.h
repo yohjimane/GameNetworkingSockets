@@ -104,7 +104,7 @@ typedef char SteamNetworkingErrMsg[ 1024 ];
 		return errno;
 	}
 
-	#ifdef __APPLE__
+	#if !defined( __linux__ )
 		#define USE_POLL
 	#else
 		#define USE_EPOLL
