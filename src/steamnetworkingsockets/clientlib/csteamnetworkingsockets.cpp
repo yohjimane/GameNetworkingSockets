@@ -2411,6 +2411,12 @@ const char *CSteamNetworkingUtils::GetPlatformString()
 		return "linux";
 	#elif defined( FREEBSD ) || defined( __FreeBSD__ )
 		return "freebsd";
+	#elif defined( __OpenBSD__ )
+		return "openbsd";
+	#elif defined( __NetBSD__ )
+		return "netbsd";
+	#elif defined( __DragonFly__ )
+		return "dragonfly";
 	#else
 		#error "Unknown platform"
 	#endif
