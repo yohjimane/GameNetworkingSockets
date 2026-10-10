@@ -298,7 +298,7 @@ macro(set_clientlib_target_properties GNS_TARGET)
 		#if(USE_STEAMWEBRTC AND NOT STEAMWEBRTC_USE_STATIC_LIBS)
 		#	target_link_libraries(${GNS_TARGET} PRIVATE dl)
 		#endif()
-	elseif(CMAKE_SYSTEM_NAME MATCHES FreeBSD)
+	elseif(CMAKE_SYSTEM_NAME MATCHES "FreeBSD|OpenBSD|NetBSD|DragonFly")
 
 	elseif(CMAKE_SYSTEM_NAME MATCHES Windows)
 		if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
@@ -320,13 +320,15 @@ macro(set_clientlib_target_properties GNS_TARGET)
 
 	add_sanitizers(${GNS_TARGET})
 
-	install(
-		TARGETS ${GNS_TARGET}
-		EXPORT GameNetworkingSockets
-		LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-		ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-		RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-		)
+	if(GNS_INSTALL)
+		install(
+			TARGETS ${GNS_TARGET}
+			EXPORT GameNetworkingSockets
+			LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+			ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+			RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+			)
+	endif()
 
 endmacro()
 
@@ -379,10 +381,13 @@ if (BUILD_TOOLS)
 	gns_set_target_protobuf_properties(steamnetworkingsockets_certtool)
 	gns_set_target_crypto_properties(steamnetworkingsockets_certtool)
 
-	install(TARGETS steamnetworkingsockets_certtool DESTINATION ${CMAKE_INSTALL_BINDIR} )
+	if(GNS_INSTALL)
+		install(TARGETS steamnetworkingsockets_certtool DESTINATION ${CMAKE_INSTALL_BINDIR} )
+	endif()
 
 endif()
 
+if(GNS_INSTALL)
 install(DIRECTORY ../include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/GameNetworkingSockets)
 
 # Export file required for find_package(GameNetworkingSockets CONFIG) to work
@@ -414,4 +419,5 @@ install(FILES
 	${CMAKE_CURRENT_BINARY_DIR}/GameNetworkingSocketsConfig.cmake
 	DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/GameNetworkingSockets
 	)
+endif()
 
